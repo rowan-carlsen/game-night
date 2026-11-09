@@ -1,0 +1,14 @@
+*, *::before, &::after {
+    box-sizing: border-box;
+}
+body {
+    background: black;
+    display: flex;
+    flex-flow: column;
+    color: white;
+    font-family: sans-serif;
+}
+body, html {
+    height: 100vh;
+    overflow: hidden;
+}
