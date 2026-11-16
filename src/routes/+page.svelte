@@ -1,45 +1,54 @@
-<script>
-	import house from '#lib/assets/images/scary-house-3.jpg';
-	import motelSign from '#lib/assets/images/motel-sign4.jpg';
-	import spacesuit from '#lib/assets/images/spacesuit-edit.jpg';
-	import modelT from '#lib/assets/images/modelt-2.png';
+<script lang="ts">
+	import { scenarios } from '#lib/scenarios.ts';
+	import { gsap } from 'gsap';
+	import { Draggable } from 'gsap/Draggable';
+	import { InertiaPlugin } from 'gsap/InertiaPlugin';
+	import { onMount } from 'svelte';
+
+	gsap.registerPlugin(Draggable, InertiaPlugin);
+
+	let main: HTMLElement | undefined;
+	let container: HTMLDivElement | undefined;
+	let currentIndex = $state(0);
+
+	onMount(() => {
+		const snapX = (main ?? document.documentElement).offsetWidth;
+
+		Draggable.create(container ?? 'scenario-container', {
+			type: 'x',
+			bounds: main,
+			inertia: true,
+			snap: (value) => {
+				currentIndex = -1 * Math.round(value / snapX);
+				const snapTo = -1 * currentIndex * snapX;
+				return snapTo;
+			},
+			maxDuration: 0.5
+		});
+	});
 </script>
 
 <h1>Choose A Story</h1>
-<main>
-	<section>
-		<h2>Forget Me Not</h2>
-		<p>
-			<strong>2010's:</strong> Battered, bruised, and missing their memories, a group of outsiders must
-			piece together what happened to them in a rural American town.
-		</p>
-		<img id="motel" class="visual" src={motelSign} alt="" />
-	</section>
-	<section>
-		<h2>Music From a Darkened Room</h2>
-		<p>
-			<strong>1990's:</strong> An unassuming house on a quiet suburban street has a chilling history.
-			A clandestine government agency needs to uncover the house's true nature after it claims one of
-			their own.
-		</p>
-		<img id="house" class="visual" src={house} alt="" />
-	</section>
-	<section>
-		<h2>Operation Minoan Augur</h2>
-		<p>
-			<strong>1990's:</strong> A bizarre murder. A fugitive in a spacesuit. Detectives race against time
-			to uncover secrets never revealed to the public.
-		</p>
-		<img id="spacesuit" class="visual" src={spacesuit} alt="" />
-	</section>
-	<section>
-		<h2>Dead Light</h2>
-		<p>
-			<strong>1920's:</strong> Along an isolated country road on a stormy night, a near accident leads
-			to the discovery of a deadly secret.
-		</p>
-		<img id="model-t" class="visual" src={modelT} alt="" />
-	</section>
+<main bind:this={main}>
+	<div id="pip-holder">
+		{#each { length: scenarios.length }, index}
+			<div class="pip-outer">
+				<div class="pip-inner" class:current={index === currentIndex}></div>
+			</div>
+		{/each}
+	</div>
+	<div style="width: {100 * scenarios.length}%" id="scenario-container" bind:this={container}>
+		{#each scenarios as scenario (scenario.title)}
+			<section>
+				<h2>{scenario.title}</h2>
+				<p>
+					<strong>{scenario.setting}:</strong>
+					{scenario.description}
+				</p>
+				<img class="visual" src={scenario.image} alt="" />
+			</section>
+		{/each}
+	</div>
 </main>
 
 <style>
@@ -47,23 +56,20 @@
 	h2 {
 		text-align: center;
 	}
+	:global(body) {
+		overflow: hidden;
+	}
 	main {
-		scroll-snap-type: x mandatory;
-		height: 100%;
-		overflow: scroll;
+		width: 100%;
+		overflow: hidden;
+	}
+	#scenario-container {
 		display: flex;
 	}
-	.visual {
-		min-width: 0;
-		width: auto;
-		height: auto;
-		max-width: min(500px, 100%);
-		max-height: 500px;
-	}
+
 	section {
-		width: 100%;
-		min-width: 100%;
-		scroll-snap-align: start;
+		flex-basis: 0%;
+		flex-grow: 1;
 		padding: 0 20px;
 		display: flex;
 		flex-flow: column;
@@ -72,5 +78,36 @@
 	section p {
 		font-family: monospace;
 		font-size: 12pt;
+	}
+	.visual {
+		min-width: 0;
+		width: auto;
+		height: auto;
+		max-width: min(500px, 100%);
+		max-height: 350px;
+		pointer-events: none;
+	}
+	#pip-holder {
+		margin: 0 auto;
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		gap: 20px;
+	}
+	.pip-outer {
+		width: 30px;
+		height: 10px;
+		display: flex;
+		justify-content: center;
+	}
+	.pip-inner {
+		width: 10px;
+		height: 100%;
+		background-color: white;
+		border-radius: 100px;
+		transition: width 0.5s;
+	}
+	.pip-inner.current {
+		width: 30px;
 	}
 </style>
