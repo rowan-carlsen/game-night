@@ -1,6 +1,6 @@
 import house from '#lib/assets/images/scary-house-3.jpg';
 import motelSign from '#lib/assets/images/motel-sign4.jpg';
-import spacesuit from '#lib/assets/images/spacesuit-edit.jpg';
+import spacesuit from '#lib/assets/images/spacesuit-6.jpg';
 import modelT from '#lib/assets/images/modelt-2.png';
 
 export const scenarios = [
