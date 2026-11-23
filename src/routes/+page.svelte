@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { scenarios } from '#lib/scenarios.ts';
+	import { activeScenarios as scenarios } from '#lib/scenarios.ts';
 	import { gsap } from 'gsap';
 	import { Draggable } from 'gsap/Draggable';
 	import { InertiaPlugin } from 'gsap/InertiaPlugin';
@@ -48,7 +48,9 @@
 					<strong>{scenario.setting}:</strong>
 					{scenario.description}
 				</p>
-				<img class="visual" src={scenario.image} alt="" />
+				<div class="visual">
+					<img src={scenario.image} alt="" />
+				</div>
 			</section>
 		{/each}
 	</div>
@@ -132,11 +134,27 @@
 		font-size: 12pt;
 	}
 	.visual {
+		max-width: min(500px, 100%);
+		max-height: 350px;
+		pointer-events: none;
+		position: relative;
+	}
+	.visual::before {
+		content: '';
+		z-index: 5;
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(to bottom, black 0%, transparent 5%, transparent 95%, black 100%),
+			linear-gradient(to right, black 0%, transparent 5%, transparent 95%, black 100%);
+	}
+	.visual img {
+		z-index: 1;
 		min-width: 0;
 		width: auto;
 		height: auto;
-		max-width: min(500px, 100%);
-		max-height: 350px;
+		max-width: 100%;
+		max-height: 100%;
 		pointer-events: none;
 	}
 	#pip-holder {
