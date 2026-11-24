@@ -84,6 +84,7 @@
 	h2 {
 		font-weight: bold;
 		color: #b9b9b9;
+		font-size: clamp(1.2rem, 5.5vw, 2rem);
 	}
 	h1 {
 		margin: 0;
@@ -122,10 +123,15 @@
 		display: flex;
 		flex-flow: column;
 		align-items: center;
+		display: grid;
+		grid-template-rows: min-content 9rem auto;
+		align-items: baseline;
 	}
 	section p {
 		font-size: 12pt;
 		color: #b9b9b9;
+		height: 100%;
+		overflow: auto;
 	}
 	section p strong {
 		color: #fff;
