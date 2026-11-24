@@ -11,9 +11,14 @@
 	let main: HTMLElement;
 	let container: HTMLDivElement;
 	let currentIndex = $state(0);
+	let hidden = $state(true);
 
 	const handleThrowComplete: UIEventHandler<HTMLElement> = (e) => {
 		console.log(e);
+	};
+
+	const showContents = () => {
+		hidden = false;
 	};
 
 	onMount(() => {
@@ -31,15 +36,25 @@
 			maxDuration: 0.5,
 			onThrowComplete: handleThrowComplete
 		});
+		showContents();
 	});
 </script>
 
+<svelte:head
+	><link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Oxanium:wght@200..800&display=swap"
+		rel="stylesheet"
+	/></svelte:head
+>
 <main
 	bind:this={main}
 	class:start={currentIndex <= 0}
 	class:end={currentIndex >= scenarios.length - 1}
+	class:hidden
 >
-	<h1>Choose A Story</h1>
+	<h1>Scenario Preview</h1>
 	<div style="width: {100 * scenarios.length}%" id="scenario-container" bind:this={container}>
 		{#each scenarios as scenario (scenario.title)}
 			<section>
@@ -66,9 +81,17 @@
 	h2 {
 		text-align: center;
 	}
+	h2 {
+		font-weight: bold;
+		color: #b9b9b9;
+	}
 	h1 {
 		margin: 0;
 		padding: 0.5em 0;
+		font-family: 'Cinzel', serif;
+		font-optical-sizing: auto;
+		font-weight: 500;
+		font-style: normal;
 	}
 	main {
 		height: 100%;
@@ -76,49 +99,20 @@
 		flex-flow: column;
 		width: 100%;
 		overflow: hidden;
-		position: relative;
 		padding-bottom: 10px;
+		font-family: 'Oxanium', sans-serif;
+		font-optical-sizing: auto;
+		font-weight: normal;
+		font-style: normal;
+		transition: opacity 0.5s;
+		opacity: 1;
+	}
+	.hidden {
+		opacity: 0;
 	}
 	#scenario-container {
 		display: flex;
 		flex-grow: 1;
-	}
-	main::before,
-	main::after {
-		position: absolute;
-		top: 50%;
-		width: 20px;
-		height: 50px;
-		content: '';
-		z-index: 50;
-		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 185.343 185.343' xml:space='preserve'%3E%3Cpath fill='white' d='M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175 l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934 c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z'/%3E%3C/svg%3E");
-		background-repeat: no-repeat;
-		background-position: center;
-		animation: blink 4s infinite linear;
-	}
-	@keyframes blink {
-		from {
-			transform: translateX(-50%);
-		}
-		25% {
-			transform: translateX(50%);
-			opacity: 0;
-		}
-		100% {
-			opacity: 0;
-			transform: translateX(-50%);
-		}
-	}
-	main::before {
-		left: 0;
-		rotate: 180deg;
-	}
-	main::after {
-		right: 0;
-	}
-	main.start::before,
-	main.end::after {
-		visibility: hidden;
 	}
 
 	section {
@@ -130,8 +124,11 @@
 		align-items: center;
 	}
 	section p {
-		font-family: monospace;
 		font-size: 12pt;
+		color: #b9b9b9;
+	}
+	section p strong {
+		color: #fff;
 	}
 	.visual {
 		max-width: min(500px, 100%);

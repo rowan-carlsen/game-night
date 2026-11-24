@@ -1,4 +1,4 @@
 # Before Launch
 
 - better fonts
-- full testing on mobile devices, orientations
+- normalize image sizing (ish), text heights (definitely)
